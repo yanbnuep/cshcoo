@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSHCOO</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static "frontend/css/cascade.css" %}">
+</head>
+<body>
+{% for data in weekly_days %}
+    {{ data.stn }}
+{% endfor %}
+</body>
+</html>

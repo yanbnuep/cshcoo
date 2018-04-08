@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static "frontend/css/cascade.css" %}">
+</head>
+<body>
+<div id="app_wrapper" style="width: 1024px;margin: 0 auto">
+    <form action="" style="margin-top: 20px;">
+        {% csrf_token %}
+        <table class="datasheet" id="weekly_table">
+            <thead>
+            <tr>
+                <th rowspan="2">STN</th>
+                <th rowspan="2">SCOM</th>
+                {% for date in week_days %}
+                    <th colspan="3">{{ date|date:"d M" }} <br/> {{ date|date:"D" }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                {% load  csh_extras %}
+                {% for i in 7|times %}
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody id="weekly_table_body">
+            {% for stn,stn_value in stn_choices %}
+                <tr id="{{ forloop.counter0 }}">
+                    <td>{{ stn }}</td>
+                    <td><input type="text"></td>
+                    {% load  csh_extras %}
+                    {% for i in 21|times %}
+                        <td><input type="number"></td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <input type="submit" id="submit">
+    </form>
+</div>
+
+</body>
+{% load static %}
+<script src="{% static "frontend/js/jquery.js" %}"></script>
+<script>
+
+    $(document).ready(function () {
+        $('#submit').click(function (event) {
+            event.preventDefault();
+            postWeeklyData()
+        });
+    });
+
+    function collectTableData() {
+        var weekly_data = [];
+        $.each($('#weekly_table_body').find('tr'), function (index, el) {
+            var row = parseRowData(el);
+            weekly_data = weekly_data.concat(row);
+        });
+        return weekly_data;
+    }
+
+    function postWeeklyData() {
+
+        var csrftoken = getCookie('csrftoken');
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: 'post',
+            data: {"weekly_data": JSON.stringify(collectTableData())},
+            success: function (data) {
+                console.log(data);
+            }
+        })
+    }
+
+    function parseRowData(row) {
+        {%  load csh_extras %}
+        var week_days = {{ week_days|js }};
+        var stn = '', scom = '', shift = '', date = '', row_data = [];
+        $.each($(row).find('td'), function (index, val) {
+            if (index === 0) {
+                stn = val.innerText;
+            } else if (index === 1) {
+                scom = $(val).find('input')[0].value;
+            } else {
+                if (index % 3 === 2) {
+                    shift = 'A'
+                } else if (index % 3 === 0) {
+                    shift = 'B'
+                } else {
+                    shift = 'C'
+                }
+
+                var record = {
+                    'stn': stn,
+                    'scom': scom,
+                    'shift': shift,
+                    'date': week_days[Math.floor((index - 2)/3)],
+                    'value': $(val).find('input')[0].value
+                };
+                row_data.push(record)
+            }
+        });
+        return row_data
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+</script>
+</html>
