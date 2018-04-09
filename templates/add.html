@@ -66,6 +66,27 @@
         return weekly_data;
     }
 
+    function collectSCOM() {
+        var scoms = [];
+        {%  load csh_extras %}
+        var week_days = {{ week_days|js }};
+        $.each($('#weekly_table_body').find('tr'), function (index, el) {
+            var scom = {};
+            (function (scom) {
+                scom['stn'] = $(el).find('td')[0].innerText;
+                var value = $(el).find('td input')[0].value;
+                if (!value) {
+                    value = 0;
+                }
+                scom['scom'] = value;
+                scoms.push(scom);
+            })(scom);
+            console.log(scoms);
+            return scoms;
+        })
+
+    }
+
     function postWeeklyData() {
 
         var csrftoken = getCookie('csrftoken');
@@ -80,7 +101,7 @@
             type: 'POST',
             dataType: 'json',
             url: 'post',
-            data: {"weekly_data": JSON.stringify(collectTableData())},
+            data: {"weekly_data": JSON.stringify(collectTableData()), "weekly_scom": JSON.stringify(collectSCOM())},
             success: function (data) {
                 console.log(data);
             }
@@ -109,7 +130,7 @@
                     'stn': stn,
                     'scom': scom,
                     'shift': shift,
-                    'date': week_days[Math.floor((index - 2)/3)],
+                    'date': week_days[Math.floor((index - 2) / 3)],
                     'value': $(val).find('input')[0].value
                 };
                 row_data.push(record)

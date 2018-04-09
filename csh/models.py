@@ -12,6 +12,7 @@ class CSH(models.Model):
     date = models.DateField(blank=False)
     shift = models.CharField(choices=SHIFTS_CHOICE, blank=False, max_length=10)
     value = models.IntegerField(blank=False, default=0)
+
     def __str__(self):
         return '%s %s' % (self.stn, self.date)
 
@@ -24,6 +25,12 @@ class CSH(models.Model):
             week.append(week_day)
 
         return week
+
+
+class SCOM(models.Model):
+    stn = models.CharField(choices=STN_CHOICES, blank=False, max_length=10)
+    start_date = models.DateField(blank=False)
+    end_date = models.DateField(blank=False)
 
 
 class CSHForm(forms.ModelForm):

@@ -24,12 +24,13 @@ def post_weekly_data(request):
                 csh = form.save()
             else:
                 print('error')
-    return JsonResponse({'data':'done'})
+    return JsonResponse({'data': 'done'})
 
 
 def index_view(request):
     week_days = CSH.get_weekly()
     weekly_data = CSH.objects.all().filter(date__range=[week_days[0], week_days[6]])
-    week_dates = list(set(weekly_data))
-    context = {'weekly_data': weekly_data, 'weekly_days':week_days}
-    return render(request, 'index.html',context)
+    weekly_json = serializers.serialize('json', weekly_data)
+    print(weekly_json)
+    context = {'weekly_data': weekly_json, 'weekly_days': week_days}
+    return render(request, 'index.html', context)
