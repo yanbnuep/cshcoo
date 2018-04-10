@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="{% static "frontend/css/cascade.css" %}">
 </head>
 <body>
+    {% for foo in weekly_scom %}
+        {{ foo }}
+    {% endfor %}
 
 </body>
 {% load static %}

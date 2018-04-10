@@ -29,11 +29,20 @@ class CSH(models.Model):
 
 class SCOM(models.Model):
     stn = models.CharField(choices=STN_CHOICES, blank=False, max_length=10)
-    start_date = models.DateField(blank=False)
-    end_date = models.DateField(blank=False)
+    value = models.CharField(blank=False, default='0', max_length=30)
+    start_date = models.DateField(blank=False, max_length=15)
+    end_date = models.DateField(blank=False, max_length=15)
 
+    class Meta:
+        unique_together = (("stn", "start_date", "end_date"),)
 
 class CSHForm(forms.ModelForm):
     class Meta:
         model = CSH
         fields = ['stn', 'date', 'shift', 'value']
+
+
+class SCOMForm(forms.ModelForm):
+    class Meta:
+        model = SCOM
+        fields = ['stn', 'value', 'start_date', 'end_date']

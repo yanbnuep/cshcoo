@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="{% static "frontend/css/cascade.css" %}">
 </head>
 <body>
+        <script>
+            {% if messages %}
+                {% for message in messages %}
+                    alert(message);
+                {% endfor %}
+            {% endif %}
+        </script>
 <div id="app_wrapper" style="width: 1024px;margin: 0 auto">
     <form action="" style="margin-top: 20px;">
         {% csrf_token %}
@@ -78,13 +85,14 @@
                 if (!value) {
                     value = 0;
                 }
-                scom['scom'] = value;
+                scom['value'] = value;
+                scom['create-date'] = week_days[0];
+                scom['end_date'] = week_days[6];
                 scoms.push(scom);
             })(scom);
+        });
             console.log(scoms);
             return scoms;
-        })
-
     }
 
     function postWeeklyData() {
