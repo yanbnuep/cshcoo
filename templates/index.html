@@ -7,9 +7,7 @@
     <link rel="stylesheet" href="{% static "frontend/css/cascade.css" %}">
 </head>
 <body>
-    {% for foo in weekly_scom %}
-        {{ foo }}
-    {% endfor %}
+
 
 </body>
 {% load static %}
@@ -17,7 +15,10 @@
 <script src="{% static "frontend/js/json2html.js" %}"></script>
 <script src="{% static "frontend/js/jquery.json2html.js" %}"></script>
 <script>
-    var weekly_json ={{weekly_data}}
-    console.log(weekly_json)
+$(document).ready(function () {
+    {% load csh_extras %}
+    console.log({{ weekly_scom|js}})
+})
+
 </script>
 </html>

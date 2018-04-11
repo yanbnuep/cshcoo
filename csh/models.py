@@ -36,6 +36,7 @@ class SCOM(models.Model):
     class Meta:
         unique_together = (("stn", "start_date", "end_date"),)
 
+
 class CSHForm(forms.ModelForm):
     class Meta:
         model = CSH

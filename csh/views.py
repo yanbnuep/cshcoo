@@ -31,16 +31,16 @@ def post_weekly_data(request):
                 if form.is_valid():
                     scom = form.save()
                 else:
-                    messages.error(request, 'Error')
 
-    return JsonResponse({'data': 'done'})
+                    return JsonResponse(form.errors.as_json(), safe=False)
+
+    return JsonResponse({'data': 'done'}, safe=False)
 
 
 def index_view(request):
     week_days = CSH.get_weekly()
     weekly_data = CSH.objects.all().filter(date__range=[week_days[0], week_days[6]])
     weekly_json = serializers.serialize('json', weekly_data)
-    weekly_scom = SCOM.objects.all()
-    print(weekly_scom)
+    weekly_scom = serializers.serialize('json', SCOM.objects.all().filter(start_date=week_days[0]))
     context = {'weekly_data': weekly_json, 'weekly_days': week_days, "weekly_scom": weekly_scom}
-    return render(request, 'index.html', context)
+    return render(request, 'index.html',context)
