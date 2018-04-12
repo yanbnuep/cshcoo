@@ -14,3 +14,7 @@ def times(number):
 def js(obj):
     return mark_safe(json.dumps(obj, indent=4, sort_keys=True, default=str))
 
+
+@register.filter(name='zip')
+def zip_lists(a, b):
+    return zip(a, b)

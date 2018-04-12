@@ -7,18 +7,62 @@
     <link rel="stylesheet" href="{% static "frontend/css/cascade.css" %}">
 </head>
 <body>
-
-
+<div id="app_wrapper" style="width: 1024px;margin: 0 auto">
+    <table class="datasheet">
+        <thead>
+        <tr>
+            <th rowspan="2">STN</th>
+            <th rowspan="2">SCOM</th>
+            {% for date in weekly_days %}
+                <th colspan="3">{{ date|date:"d M" }} <br/> {{ date|date:"D" }}</th>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for i in weekly_days %}
+                <th>A</th>
+                <th>B</th>
+                <th>C</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% regroup weekly_data by stn as stn_list %}
+        {% for stn in stn_list %}
+            <tr>
+                <td class="stn">{{ stn.grouper }}</td>
+                <td class="scom"></td>
+                {% for data in  stn.list %}
+                    <td>{{ data.value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 </body>
 {% load static %}
 <script src="{% static "frontend/js/jquery.js" %}"></script>
-<script src="{% static "frontend/js/json2html.js" %}"></script>
-<script src="{% static "frontend/js/jquery.json2html.js" %}"></script>
 <script>
-$(document).ready(function () {
-    {% load csh_extras %}
-    console.log({{ weekly_scom|js}})
-})
+    $(document).ready(function () {
+        {% load csh_extras %}
+        var weekly_scom ={{ weekly_scom|js}}
+        parseSCOM(weekly_scom)
+    });
 
+    function parseSCOM(scoms){
+        var scoms_json = JSON.parse(scoms),
+            scom_td = $('.scom');
+        var stns = [];
+        $.each($('.stn'),function (index, el) {
+            stns.push(el.innerText);
+        });
+
+        $.each(scoms_json, function (index, val) {
+            var scom_val = val['fields'].value,
+                scom_stn = val['fields'].stn;
+            var in_scom = $.inArray(scom_stn,stns);
+            scom_td[in_scom].innerText = scom_val;
+        })
+    }
 </script>
 </html>

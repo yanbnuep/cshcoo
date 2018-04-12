@@ -17,11 +17,12 @@ class CSH(models.Model):
         return '%s %s' % (self.stn, self.date)
 
     @staticmethod
-    def get_weekly():
-        today = datetime.date.today()
+    def get_weekly(date):
+        if date is None:
+            date = datetime.date.today()
         week = []
         for x in range(0, 7):
-            week_day = today - datetime.timedelta(days=today.weekday() - x)
+            week_day = date - datetime.timedelta(days=date.weekday() - x)
             week.append(week_day)
 
         return week

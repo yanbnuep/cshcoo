@@ -91,7 +91,6 @@
                 scoms.push(scom);
             })(scom);
         });
-            console.log(scoms);
             return scoms;
     }
 
@@ -105,10 +104,11 @@
                 }
             }
         });
+        console.log(JSON.stringify(collectTableData()));
         $.ajax({
             type: 'POST',
             dataType: 'json',
-            url: 'post',
+            url: '/add/post',
             data: {"weekly_data": JSON.stringify(collectTableData()), "weekly_scom": JSON.stringify(collectSCOM())},
             success: function (data) {
                 console.log(data);
