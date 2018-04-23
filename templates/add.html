@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="{% static "frontend/css/cascade.css" %}">
 </head>
 <body>
-        <script>
-            {% if messages %}
-                {% for message in messages %}
-                    alert(message);
-                {% endfor %}
-            {% endif %}
-        </script>
+<script>
+    {% if messages %}
+        {% for message in messages %}
+            alert(message);
+        {% endfor %}
+    {% endif %}
+</script>
 <div id="app_wrapper" style="width: 1024px;margin: 0 auto">
     <form action="" style="margin-top: 20px;">
         {% csrf_token %}
@@ -50,17 +50,30 @@
         </table>
         <input type="submit" id="submit">
     </form>
+    <div id="add_history">
+        <div class="input-group">
+            <label for="date_picker">Add history data:</label>
+            <input type="text" id="date_picker">
+        </div>
+        <button id="jumpToHistory">Go</button>
+    </div>
 </div>
 
 </body>
 {% load static %}
 <script src="{% static "frontend/js/jquery.js" %}"></script>
+<script src="{% static "frontend/js/jquery-ui.min.js" %}"></script>
 <script>
 
     $(document).ready(function () {
         $('#submit').click(function (event) {
             event.preventDefault();
             postWeeklyData()
+        });
+        $("#date_picker").datepicker({
+            dateFormat: "yy/mm/dd"
+        }).on("change", function () {
+            jumpHistory($('#date_picker').val())
         });
     });
 
@@ -91,7 +104,7 @@
                 scoms.push(scom);
             })(scom);
         });
-            return scoms;
+        return scoms;
     }
 
     function postWeeklyData() {
@@ -104,14 +117,12 @@
                 }
             }
         });
-        console.log(JSON.stringify(collectTableData()));
         $.ajax({
             type: 'POST',
             dataType: 'json',
             url: '/add/post',
             data: {"weekly_data": JSON.stringify(collectTableData()), "weekly_scom": JSON.stringify(collectSCOM())},
             success: function (data) {
-                console.log(data);
             }
         })
     }
@@ -166,6 +177,10 @@
     function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    function jumpHistory(date) {
+        window.location.href = "/add/" + date;
     }
 </script>
 </html>

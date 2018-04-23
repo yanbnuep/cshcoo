@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<br lang="en">
 <head>
     <meta charset="UTF-8">
     <title>CSHCOO</title>
     {% load static %}
     <link rel="stylesheet" href="{% static "frontend/css/cascade.css" %}">
 </head>
-<body>
 <div id="app_wrapper" style="width: 1024px;margin: 0 auto">
+    <div class="nav">
+
+    </div>
     <table class="datasheet">
         <thead>
         <tr>
@@ -38,31 +40,50 @@
         {% endfor %}
         </tbody>
     </table>
+    <div id="history_picker">
+        <div class="input-group">
+            <label for="date_picker">Search history record:</label>
+            <input type="text" id="date_picker">
+        </div>
+        <button id="jumpToHistory">Search</button>
+    </div>
 </div>
 </body>
 {% load static %}
 <script src="{% static "frontend/js/jquery.js" %}"></script>
+<script src="{% static "frontend/js/jquery-ui.min.js" %}"></script>
 <script>
     $(document).ready(function () {
+        //init table and weekly date
         {% load csh_extras %}
-        var weekly_scom ={{ weekly_scom|js}}
-        parseSCOM(weekly_scom)
+        var weekly_scom = {{ weekly_scom|js}}
+            parseSCOM(weekly_scom);
+        //date picker
+        $("#date_picker").datepicker({
+            dateFormat: "yy/mm/dd"
+        }).on("change",function () {
+            jumpHistory($('#date_picker').val())
+        });
     });
 
-    function parseSCOM(scoms){
+    function parseSCOM(scoms) {
         var scoms_json = JSON.parse(scoms),
             scom_td = $('.scom');
         var stns = [];
-        $.each($('.stn'),function (index, el) {
+        $.each($('.stn'), function (index, el) {
             stns.push(el.innerText);
         });
 
         $.each(scoms_json, function (index, val) {
             var scom_val = val['fields'].value,
                 scom_stn = val['fields'].stn;
-            var in_scom = $.inArray(scom_stn,stns);
+            var in_scom = $.inArray(scom_stn, stns);
             scom_td[in_scom].innerText = scom_val;
         })
+    }
+
+    function jumpHistory(date) {
+        window.location.href =  "/" + date;
     }
 </script>
 </html>

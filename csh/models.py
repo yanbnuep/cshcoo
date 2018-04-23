@@ -11,7 +11,10 @@ class CSH(models.Model):
     stn = models.CharField(choices=STN_CHOICES, blank=False, max_length=10)
     date = models.DateField(blank=False)
     shift = models.CharField(choices=SHIFTS_CHOICE, blank=False, max_length=10)
-    value = models.IntegerField(blank=False, default=0)
+    value = models.CharField(blank=True, max_length=30, default='')
+
+    class Meta:
+        unique_together = (("stn", "date", "shift"),)
 
     def __str__(self):
         return '%s %s' % (self.stn, self.date)
