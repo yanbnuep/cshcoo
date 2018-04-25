@@ -2,11 +2,12 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import json
 from django.core import serializers
-from datetime import datetime, date
+from datetime import datetime
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 from .models import CSH, CSHForm, SCOM, SCOMForm
 
-
+@login_required
 def add_weekly_page(request):
     stn_choices = CSH._meta.get_field('stn').choices
     shift_choices = CSH._meta.get_field('shift').choices
@@ -15,7 +16,7 @@ def add_weekly_page(request):
 
     return render(request, 'add.html', context)
 
-
+@login_required
 def add_specify_week(request, year, month, day):
     request_date = datetime.strptime(year+'-'+month+'-'+day, '%Y-%m-%d').date()
     stn_choices = CSH._meta.get_field('stn').choices
@@ -25,7 +26,7 @@ def add_specify_week(request, year, month, day):
 
     return render(request, 'add.html', context)
 
-
+@login_required
 def post_weekly_data(request):
     if request.method == 'POST':
         if 'weekly_data' in request.POST:
@@ -65,3 +66,4 @@ def specify_weekly(request, year, month, day):
     weekly_scom = serializers.serialize('json', SCOM.objects.only('stn', 'value').filter(start_date=week_days[0]))
     context = {"weekly_scom": weekly_scom, 'weekly_data': weekly_data, 'weekly_days': week_days}
     return render(request, 'index.html', context)
+

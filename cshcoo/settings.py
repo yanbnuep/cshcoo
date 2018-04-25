@@ -25,7 +25,7 @@ SECRET_KEY = '(^i-^6dty1a2%=v3&ss@o5lcs1nj6pew+dk#bb2$b+o6)-icz+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.18.15', 'localhost']
+ALLOWED_HOSTS = ['192.168.18.15', 'localhost', '192.168.7.89']
 
 
 # Application definition
@@ -123,3 +123,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"), 'static')
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+
+
+# Redirect to home URL after login (Default redirects to /accounts/profile/)
+LOGIN_REDIRECT_URL = '/add'
