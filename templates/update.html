@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<br lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSHCOO</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static "frontend/css/cascade.css" %}">
+</head>
+<div id="app_wrapper" style="width: 1024px;margin: 0 auto">
+    <div class="nav">
+
+    </div>
+    <form action="" style="margin-top: 20px;">
+        {% csrf_token %}
+        <table class="datasheet">
+            <thead>
+            <tr>
+                <th rowspan="2">STN</th>
+                <th rowspan="2">SCOM</th>
+                {% for date in weekly_days %}
+                    <th colspan="3">{{ date|date:"d M" }} <br/> {{ date|date:"D" }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                {% for i in weekly_days %}
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% regroup weekly_data by stn as stn_list %}
+            {% for stn in stn_list %}
+                <tr>
+                    <td class="stn">{{ stn.grouper }}</td>
+                    <td><input type="text" class="scom_ipt"/></td>
+                    {% for data in  stn.list %}
+                        <td><input class="update_ipt" id={{ data.id }} type="text" value={{ data.value }}></td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <input type="submit" id="submit">
+    </form>
+    <div id="history_picker">
+        <div class="input-group">
+            <label for="date_picker">Search history record:</label>
+            <input type="text" id="date_picker">
+        </div>
+        <button id="jumpToHistory">Search</button>
+    </div>
+</div>
+</body>
+{% load static %}
+<script src="{% static "frontend/js/jquery.js" %}"></script>
+<script src="{% static "frontend/js/jquery-ui.min.js" %}"></script>
+<script>
+    $(document).ready(function () {
+        //init table and weekly date
+        {% load csh_extras %}
+        var weekly_scom = {{ weekly_scom|js}}
+            parseSCOM(weekly_scom);
+        $('#submit').click(function (event) {
+            event.preventDefault();
+            updateWeeklyData()
+        });
+    });
+
+    function parseSCOM(scoms) {
+        var scoms_json = JSON.parse(scoms),
+            scom_td = $('.scom_ipt');
+        var stns = [];
+        $.each($('.stn'), function (index, el) {
+            stns.push(el.innerText);
+        });
+
+        $.each(scoms_json, function (index, val) {
+            var scom_val = val['fields'].value,
+                scom_stn = val['fields'].stn,
+                scom_id = val.pk;
+            var in_scom = $.inArray(scom_stn, stns);
+            scom_td[in_scom].value = scom_val;
+            scom_td[in_scom].setAttribute('id', scom_id)
+        })
+    }
+
+    function collectTableData() {
+        var row_data = [];
+        $.each($('.update_ipt'), function (index, val) {
+            row_data.push({
+                "pk": $(val).attr('id'),
+                "value": $(val).val()
+            })
+        });
+        return row_data
+    }
+
+    function collectSCOM() {
+        var scoms = [];
+        $.each($('.scom_ipt'), function (index, el) {
+            scoms.push({
+                "pk": $(el).attr('id'),
+                "value": $(el).val()
+            })
+        });
+        return scoms;
+    }
+
+    function updateWeeklyData() {
+        var csrftoken = getCookie('csrftoken');
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: '/update/post',
+            data: {"weekly_data": JSON.stringify(collectTableData()), "weekly_scom": JSON.stringify(collectSCOM())},
+            success: function (data) {
+            }
+        })
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+</script>
+</html>
