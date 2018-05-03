@@ -126,4 +126,4 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/add'
+LOGIN_REDIRECT_URL = '/manage'

@@ -17,7 +17,7 @@ class CSH(models.Model):
         unique_together = (("stn", "date", "shift"),)
 
     def __str__(self):
-        return '%s %s' % (self.stn, self.date)
+        return '%s %s %s' % (self.stn, self.date, self.shift)
 
     @staticmethod
     def get_weekly(date):
@@ -40,6 +40,18 @@ class SCOM(models.Model):
     class Meta:
         unique_together = (("stn", "start_date", "end_date"),)
 
+    def __str__(self):
+        return '%s %s %s' % (self.stn, self.start_date, self.end_date)
+
+
+class Note(models.Model):
+    note = models.TextField(blank=False, default='Node', max_length=500)
+    effect_date = models.DateField(blank=False, max_length=15)
+    end_date = models.DateField(blank=False, max_length=15)
+
+    def __str__(self):
+        return self.note
+
 
 class CSHForm(forms.ModelForm):
     class Meta:
@@ -51,3 +63,5 @@ class SCOMForm(forms.ModelForm):
     class Meta:
         model = SCOM
         fields = ['stn', 'value', 'start_date', 'end_date']
+
+
