@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <title>Add</title>
     {% load static %}
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href={% static "frontend/css/csh.css" %}>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="{% static "frontend/css/cascade.css" %}">
 </head>
 <body>
+{% include "./compnents/nav.html" %}
 <script>
     {% if messages %}
         {% for message in messages %}

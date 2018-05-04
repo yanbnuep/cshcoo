@@ -2,12 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CSH Admin</title>
+    <title>Weekly SCM Admin</title>
     {% load static %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="shortcut icon" href="/static/favicon.ico">
     <link rel="stylesheet" href="{% static "frontend/css/cascade.css" %}">
     <link rel="stylesheet" href="{% static "frontend/css/csh.css" %}">
+    {% load static %}
+    <script src="{% static "frontend/js/jquery.js" %}"></script>
+    <script src="{% static "frontend/js/jquery-ui.min.js" %}"></script>
 </head>
 <body>
-    {% include "./compnents/nav.html" %}
+{% include "./compnents/nav.html" %}
+<div class="wrapper_960">
+    <div class="choice_container">
+        <div class="cell">
+            <div class="col admin_ipt_grp">
+
+                <label for="action" class="col width-1of2 admin_select_label">Select Action:</label>
+                <div class="col width-fill ">
+                    <select id="action">
+                        <option value="update">Update</option>
+                        <option value="add">Add</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col admin_ipt_grp">
+                <label for="datepicker" class="col width-1of2 admin_select_label">
+                    Date:
+                </label>
+                <div class="col width-fill"><input type="text" id="datepicker"></div>
+            </div>
+            <button class="admin_center_btn" id="go_btn">GO</button>
+        </div>
+
+    </div>
+</div>
+<style>
+    .choice_container {
+        margin-top: 30px;
+    }
+
+    .admin_select_label {
+        padding: 0 25px;
+        text-align: right;
+        box-sizing: border-box;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .admin_center_btn {
+        position: relative;
+        width: 80px;
+        left: 50%;
+        display: block;
+        margin: 0 auto;
+        top: 20px;
+        background: #fff;
+        line-height: 30px;
+    }
+
+    .admin_ipt_grp {
+        padding: 15px 0;
+    }
+
+    .admin_center_btn:hover {
+        border: 1px solid #1890ff;
+        color: #1890ff;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $("#datepicker").datepicker({dateFormat: "yy/mm/dd"}).datepicker("setDate", "0");
+        $("#go_btn").click(function () {
+            var date = $("#datepicker").val();
+            if (date) {
+                var url = $("#action").val() + '/' + date;
+                $(location).attr('href', '/'+url)
+            }
+        });
+    });
+</script>
 </body>
 </html>

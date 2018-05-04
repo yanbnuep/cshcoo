@@ -1,0 +1,44 @@
+<div class="wrapper_960">
+    <div id="tabs" class="cell tab-container">
+        <div class="col width-1of3">
+            <div class="tabs tab-select">
+                <ul class="left nav">
+                    <li class="active"><a href="#tab1" class="tab-link ">Update</a></li>
+                    <li><a href="#tab2" class="tab-link">Add</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col width-fill tab-content-group" style="border: none">
+            <div class="tab-content" id="tab1">
+            </div>
+            <div class="tab-content" id="tab2">2</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#tabs").tabs()
+    })
+</script>
+
+<style>
+    .tab-container {
+        position: relative;
+        display: block;
+    }
+
+    .tab-content {
+        position: absolute;
+        display: none;
+        border: none;
+    }
+
+    .tab-content.cur {
+        display: block;
+    }
+
+    .tab-content-group {
+
+    }
+</style>

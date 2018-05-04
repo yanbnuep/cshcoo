@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<br lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>CSHCOO</title>
     {% load static %}
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href={% static "frontend/css/csh.css" %}>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="{% static "frontend/css/cascade.css" %}">
 </head>
+<body>
+{% include "./compnents/nav.html" %}
 <div id="app_wrapper" style="width: 1024px;margin: 0 auto">
-    <div class="nav">
-
-    </div>
     <div class="notes">
         {% for note in notes %}
             {{ note }}
@@ -66,7 +68,7 @@
         //date picker
         $("#date_picker").datepicker({
             dateFormat: "yy/mm/dd"
-        }).on("change",function () {
+        }).on("change", function () {
             jumpHistory($('#date_picker').val())
         });
     });
@@ -88,7 +90,7 @@
     }
 
     function jumpHistory(date) {
-        window.location.href =  "/" + date;
+        window.location.href = "/" + date;
     }
 </script>
 </html>

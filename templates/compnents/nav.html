@@ -1,6 +1,11 @@
-<div class="wrapper_960">
-    <div class="csh_nav_container">
+<div class="csh_nav_container">
+    <div class="wrapper_960">
+        <div class="banner">
+            <a href="" class="logo"></a>
+
+        </div>
         <ul class="nav csh_nav">
+            <li class=""><a href="" class="cursor_disable">Weekly Stock Control Message</a></li>
             <li class="nav_li"><a class="nav_link" href="/">Home</a></li>
 
         </ul>
@@ -9,3 +14,37 @@
         </ul>
     </div>
 </div>
+
+<style>
+    .csh_nav_container {
+        position: relative;
+        display: block;
+        min-height: 1px;
+        margin: 0;
+        padding: 8px 0;
+        box-shadow: 0 2px 8px #f0f1f2;
+        background-color: #fff;
+        clear: both;
+    }
+    .banner {
+        float: left;
+        padding-right: 15px;
+    }
+
+    .banner .logo {
+        background: url("/static/frontend/imgs/logo.png") no-repeat scroll 0 0/100%;
+        width: 142px;
+        height: 36px;
+    }
+
+    .csh_nav .nav_li {
+        padding: 0 15px;
+    }
+     .csh_nav .nav_li a {
+         font-weight: bold;
+         cursor: pointer;
+     }
+    .cursor_disable {
+        cursor: default;
+    }
+</style>
